@@ -23,12 +23,7 @@ public class BallScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            moveDirection = new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(0f, 1f));
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            restartGame();
+            moveDirection = new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(0f, 1f)).normalized;
         }
     }
 
@@ -42,7 +37,22 @@ public class BallScript : MonoBehaviour
         switch (collision.gameObject.tag)
         {
             case "Player":
-                moveDirection.y *= -1;
+                float paddleWidth = collision.collider.bounds.size.x;
+                float offsetFromPaddleCenter = collision.transform.position.x - transform.position.x;
+
+                // -1: Left Edge of the paddle
+                //  0: Center of the paddle
+                //  1: Right Edge of the paddle
+                float hitFactor = offsetFromPaddleCenter / (paddleWidth / 2);
+                float angle = -1 * hitFactor * Mathf.PI / 4; // Using PI/4 (45 degrees) as the max angle for the bounce
+
+                // Convert angle to direction vector
+                moveDirection.x = Mathf.Sin(angle); // X component
+                moveDirection.y = Mathf.Cos(angle); // Y component (always positive)
+
+                // Adjust the angle based on the hit factor
+                moveDirection = moveDirection.normalized;
+
                 break;
             case "Wall":
                 moveDirection.x *= -1;
@@ -51,16 +61,20 @@ public class BallScript : MonoBehaviour
                 moveDirection.y *= -1;
                 break;
             case "Block":
+                Vector2 hitNormal = collision.contacts[0].normal;
+                if (Mathf.Abs(hitNormal.x) > Mathf.Abs(hitNormal.y))
+                {
+                    moveDirection.x *= -1;
+                }
+                else
+                {
+                    moveDirection.y *= -1;
+                }
+
                 Destroy(collision.gameObject);
-                moveDirection.y *= -1;
                 break;
             default:
                 break;
         }
-    }
-
-    public void restartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
