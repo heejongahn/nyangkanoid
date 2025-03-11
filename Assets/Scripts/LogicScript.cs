@@ -17,9 +17,8 @@ public class LogicScript : MonoBehaviour
     public AudioSource collideAudioSource;
     public AudioSource gameOverAudioSource;
 
-    public UnityEvent OnGameStart;
-
-    public TextMeshProUGUI scoreText;
+    // public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI healthText;
     public GameObject gameOverScreen;
     public GameObject pausedScreen;
 
@@ -28,47 +27,67 @@ public class LogicScript : MonoBehaviour
     private bool isPaused = false;
     private bool isGameStarted = false;
 
-    void updateText()
+    // void UpdateScoreText()
+    // {
+    //     scoreText.text = $"Score : {playerScore} (Life: {health})";
+    // }
+
+    void UpdateHealthText()
     {
-        scoreText.text = $"Score : {playerScore} (Life: {health})";
+        healthText.text = $"Health: {health}";
     }
 
-    [ContextMenu("Increase Score")]
-    public void addScore(int scoreToAdd)
-    {
-        if (health == 0)
-        {
-            return;
-        }
+    // [ContextMenu("Increase Score")]
+    // public void addScore(int scoreToAdd)
+    // {
+    //     if (health == 0)
+    //     {
+    //         return;
+    //     }
 
-        playerScore += scoreToAdd;
-        // scoreAudioSource.Play();
-        updateText();
-    }
+    //     playerScore += scoreToAdd;
+    //     scoreAudioSource.Play();
+    //     UpdateScoreText();
+    // }
 
-    public void restartGame()
+    public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public bool collide()
+    void OnHealthDown()
     {
         health = health - 1;
         isGameOver = health == 0;
-        collideAudioSource.Play();
-
-        updateText();
+        ToggleIsGameStarted();
+        // collideAudioSource.Play();
+        UpdateHealthText();
 
         if (isGameOver)
         {
-            // gameOverAudioSource.Play();
-            gameOverScreen.SetActive(true);
+            GameOver();
         }
-
-        return isGameOver;
     }
 
-    public void toggleGamePaused()
+    void GameOver()
+    {
+        // gameOverAudioSource.Play();
+        gameOverScreen.SetActive(true);
+        GameEventsScript.Instance.OnGameOver?.Invoke();
+    }
+
+    public void ToggleIsGameStarted()
+    {
+        if (isGameOver)
+        {
+            return;
+        }
+
+        isGameStarted = !isGameStarted;
+        GameEventsScript.Instance.OnChangeIsGameStarted.Invoke(isGameStarted);
+    }
+
+    public void ToggleGamePaused()
     {
         if (isGameOver)
         {
@@ -78,6 +97,11 @@ public class LogicScript : MonoBehaviour
         Time.timeScale = isPaused ? timeScale : 0;
         pausedScreen.SetActive(!isPaused);
         isPaused = !isPaused;
+    }
+
+    void Start()
+    {
+        GameEventsScript.Instance.OnHealthDown.AddListener(OnHealthDown);
     }
 
     void Update()
@@ -98,13 +122,13 @@ public class LogicScript : MonoBehaviour
             (
                 KeyCode.R,
                 () => {
-                    restartGame();
+                    RestartGame();
                 }
             ),
             (
                 KeyCode.Escape,
                 () => {
-                    toggleGamePaused();
+                    ToggleGamePaused();
                 }
             ),
             (
@@ -119,8 +143,7 @@ public class LogicScript : MonoBehaviour
                         return;
                     }
 
-                    GameEventsScript.Instance.OnGameStart?.Invoke();
-                    isGameStarted = true;
+                    ToggleIsGameStarted();
                 }
             )
         };
@@ -139,4 +162,5 @@ public class LogicScript : MonoBehaviour
     {
         return isGameStarted;
     }
+
 }

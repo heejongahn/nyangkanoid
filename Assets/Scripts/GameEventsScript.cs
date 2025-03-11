@@ -5,7 +5,10 @@ public class GameEventsScript : MonoBehaviour
 {
     public static GameEventsScript Instance;
 
-    public UnityEvent OnGameStart;
+    public UnityEvent<bool> OnChangeIsGameStarted;
+    public UnityEvent OnHealthDown;
+    public UnityEvent OnGameOver;
+
 
     private void Awake()
     {
