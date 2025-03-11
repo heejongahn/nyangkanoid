@@ -32,11 +32,7 @@ public class BallScript : MonoBehaviour
 
     void OnDestroy()
     {
-        // Unsubscribe from the game start event
-        if (GameEventsScript.Instance != null)
-        {
-            GameEventsScript.Instance.OnChangeIsGameStarted.RemoveListener(HandleGameStart);
-        }
+        GameEventsScript.Instance.OnChangeIsGameStarted.RemoveListener(HandleGameStart);
     }
 
 
@@ -131,6 +127,14 @@ public class BallScript : MonoBehaviour
                     }
 
                     Destroy(collision.gameObject);
+                    // Check if all blocks are destroyed
+
+                    if (GameObject.FindGameObjectsWithTag("Block").Length == 1) // Only the current block is left
+                    {
+                        Debug.Log("All blocks destroyed! Level complete.");
+                        GameEventsScript.Instance.OnWinLevel?.Invoke();
+                    }
+
                     break;
 
                 }

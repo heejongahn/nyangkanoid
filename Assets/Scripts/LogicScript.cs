@@ -21,87 +21,28 @@ public class LogicScript : MonoBehaviour
     public TextMeshProUGUI healthText;
     public GameObject gameOverScreen;
     public GameObject pausedScreen;
+    public GameObject victoryScreen;
 
     private float timeScale = 1;
     private bool isGameOver = false;
     private bool isPaused = false;
     private bool isGameStarted = false;
 
-    // void UpdateScoreText()
-    // {
-    //     scoreText.text = $"Score : {playerScore} (Life: {health})";
-    // }
-
-    void UpdateHealthText()
+    public bool IsGameStarted()
     {
-        healthText.text = $"Health: {health}";
-    }
-
-    // [ContextMenu("Increase Score")]
-    // public void addScore(int scoreToAdd)
-    // {
-    //     if (health == 0)
-    //     {
-    //         return;
-    //     }
-
-    //     playerScore += scoreToAdd;
-    //     scoreAudioSource.Play();
-    //     UpdateScoreText();
-    // }
-
-    public void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    void OnHealthDown()
-    {
-        health = health - 1;
-        isGameOver = health == 0;
-        ToggleIsGameStarted();
-        // collideAudioSource.Play();
-        UpdateHealthText();
-
-        if (isGameOver)
-        {
-            GameOver();
-        }
-    }
-
-    void GameOver()
-    {
-        // gameOverAudioSource.Play();
-        gameOverScreen.SetActive(true);
-        GameEventsScript.Instance.OnGameOver?.Invoke();
-    }
-
-    public void ToggleIsGameStarted()
-    {
-        if (isGameOver)
-        {
-            return;
-        }
-
-        isGameStarted = !isGameStarted;
-        GameEventsScript.Instance.OnChangeIsGameStarted.Invoke(isGameStarted);
-    }
-
-    public void ToggleGamePaused()
-    {
-        if (isGameOver)
-        {
-            return;
-        }
-
-        Time.timeScale = isPaused ? timeScale : 0;
-        pausedScreen.SetActive(!isPaused);
-        isPaused = !isPaused;
+        return isGameStarted;
     }
 
     void Start()
     {
         GameEventsScript.Instance.OnHealthDown.AddListener(OnHealthDown);
+        GameEventsScript.Instance.OnWinLevel.AddListener(OnVictory);
+    }
+
+    void OnDestroy()
+    {
+        GameEventsScript.Instance.OnHealthDown.RemoveListener(OnHealthDown);
+        GameEventsScript.Instance.OnWinLevel.RemoveListener(OnVictory);
     }
 
     void Update()
@@ -158,9 +99,83 @@ public class LogicScript : MonoBehaviour
         }
     }
 
-    public bool IsGameStarted()
+
+    // void UpdateScoreText()
+    // {
+    //     scoreText.text = $"Score : {playerScore} (Life: {health})";
+    // }
+
+    void UpdateHealthText()
     {
-        return isGameStarted;
+        healthText.text = $"Health: {health}";
     }
+
+    // [ContextMenu("Increase Score")]
+    // public void addScore(int scoreToAdd)
+    // {
+    //     if (health == 0)
+    //     {
+    //         return;
+    //     }
+
+    //     playerScore += scoreToAdd;
+    //     scoreAudioSource.Play();
+    //     UpdateScoreText();
+    // }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    void OnHealthDown()
+    {
+        health = health - 1;
+        isGameOver = health == 0;
+        ToggleIsGameStarted();
+        // collideAudioSource.Play();
+        UpdateHealthText();
+
+        if (isGameOver)
+        {
+            GameOver();
+        }
+    }
+
+    void OnVictory()
+    {
+        victoryScreen.SetActive(true);
+    }
+
+    void GameOver()
+    {
+        // gameOverAudioSource.Play();
+        gameOverScreen.SetActive(true);
+        GameEventsScript.Instance.OnGameOver?.Invoke();
+    }
+
+    public void ToggleIsGameStarted()
+    {
+        if (isGameOver)
+        {
+            return;
+        }
+
+        isGameStarted = !isGameStarted;
+        GameEventsScript.Instance.OnChangeIsGameStarted.Invoke(isGameStarted);
+    }
+
+    public void ToggleGamePaused()
+    {
+        if (isGameOver)
+        {
+            return;
+        }
+
+        Time.timeScale = isPaused ? timeScale : 0;
+        pausedScreen.SetActive(!isPaused);
+        isPaused = !isPaused;
+    }
+
 
 }

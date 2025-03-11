@@ -8,7 +8,7 @@ public class GameEventsScript : MonoBehaviour
     public UnityEvent<bool> OnChangeIsGameStarted;
     public UnityEvent OnHealthDown;
     public UnityEvent OnGameOver;
-
+    public UnityEvent OnWinLevel;
 
     private void Awake()
     {
