@@ -47,11 +47,11 @@ public class LogicScript : MonoBehaviour
 
     void Update()
     {
-        // if (!isPaused)
-        // {
-        //     timeScale += Time.deltaTime / 50;
-        //     Time.timeScale = timeScale;
-        // }
+        if (!isPaused)
+        {
+            timeScale += Time.deltaTime / 50;
+            Time.timeScale = timeScale;
+        }
 
         // pitchModifier = (1 + (timeScale - 1) / 2) + 0.57F;
 
