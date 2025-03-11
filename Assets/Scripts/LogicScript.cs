@@ -145,6 +145,7 @@ public class LogicScript : MonoBehaviour
     void OnVictory()
     {
         victoryScreen.SetActive(true);
+        ToggleIsGameStarted();
     }
 
     void GameOver()
