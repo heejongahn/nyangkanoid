@@ -24,11 +24,13 @@ public class CatsScript : MonoBehaviour
 
         float halfPaddle = paddleWidth / 2f;
 
-        // Get screen bounds in world coordinates
-        float screenHalfWidth = Camera.main.orthographicSize * Screen.width / Screen.height;
+        Vector3 leftEdge = Camera.main.ViewportToWorldPoint(new Vector3(0, 0.5f, 0));
+        Vector3 rightEdge = Camera.main.ViewportToWorldPoint(new Vector3(1, 0.5f, 0));
 
-        minX = -screenHalfWidth + halfPaddle + padding;
-        maxX = screenHalfWidth - halfPaddle - padding;
+        // Set paddle movement boundaries within the visible area
+        minX = leftEdge.x + halfPaddle;
+        maxX = rightEdge.x - halfPaddle;
+
 
     }
     void Update()
