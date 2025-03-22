@@ -49,7 +49,7 @@ public class BallScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = moveDirection * speed;
+        rb.linearVelocity = moveDirection * speed;
     }
 
     void SyncPositionWithPlayer()
