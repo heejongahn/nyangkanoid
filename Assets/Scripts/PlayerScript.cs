@@ -10,7 +10,6 @@ public class CatsScript : MonoBehaviour
     public float paddleWidth = 3.5f; // Adjust based on sprite size
     public float speed = 20;
 
-    private float minX, maxX;
     private Vector2 moveDirection;
 
     private bool isColliding = false;
@@ -21,16 +20,8 @@ public class CatsScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        float halfPaddle = paddleWidth / 2f;
-
-        // Get screen bounds in world coordinates
-        float screenHalfWidth = Camera.main.orthographicSize * Screen.width / Screen.height;
-
-        minX = -screenHalfWidth + halfPaddle + padding;
-        maxX = screenHalfWidth - halfPaddle - padding;
-
     }
+
     void Update()
     {
         moveDirection = Vector2.zero;
@@ -47,6 +38,9 @@ public class CatsScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Cancel out velocity from collision with ball
+        rb.linearVelocity = Vector2.zero;
+
         if (moveDirection == Vector2.zero)
         {
             return;
@@ -55,17 +49,16 @@ public class CatsScript : MonoBehaviour
         // Move the paddle
         Vector2 newPosition = rb.position + moveDirection * speed * Time.fixedDeltaTime;
 
-        // Clamp position within screen bounds
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-
         // Apply movement
+
         rb.MovePosition(newPosition);
     }
 
 
 
-    void OnCollisionEnter2D()
+    void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log("PlayerScript: OnTriggerEnter2D with " + collision.gameObject.tag);
         isColliding = true;
 
         if (timeSinceLastCollision < invincibleTime)
