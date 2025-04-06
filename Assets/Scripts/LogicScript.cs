@@ -151,6 +151,7 @@ public class LogicScript : MonoBehaviour
     void GameOver()
     {
         // gameOverAudioSource.Play();
+        ToggleIsGameStarted();
         gameOverScreen.SetActive(true);
         GameEventsScript.Instance.OnGameOver?.Invoke();
     }

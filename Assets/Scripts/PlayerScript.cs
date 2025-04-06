@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CatsScript : MonoBehaviour
+public class PlayerScript : MonoBehaviour
 {
     public Rigidbody2D rb;
 

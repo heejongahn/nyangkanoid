@@ -4,22 +4,24 @@ using UnityEngine;
 public class BlockScript : MonoBehaviour
 {
     public Rigidbody2D rb;
-    private float fallVelocity;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private float fallVelocity = 1;
+
+    private bool isGameStarted = false;
+
     void Start()
     {
-        fallVelocity = 0.01f;
+        GameEventsScript.Instance.OnChangeIsGameStarted.AddListener(HandleGameStart);
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDestroy()
     {
-
+        GameEventsScript.Instance.OnChangeIsGameStarted.RemoveListener(HandleGameStart);
     }
 
-    void FixedUpdate()
+    public void HandleGameStart(bool _isGameStarted)
     {
-        rb.MovePosition(rb.position + new Vector2(0, -fallVelocity));
+        isGameStarted = _isGameStarted;
+        rb.linearVelocity = isGameStarted ? new Vector2(0, -fallVelocity) : Vector2.zero;
     }
 }
