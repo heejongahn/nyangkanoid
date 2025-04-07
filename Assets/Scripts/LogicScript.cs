@@ -61,9 +61,9 @@ public class LogicScript : MonoBehaviour
             return;
         }
 
-        timeScale += Time.deltaTime / 100;
+        timeScale += Time.deltaTime / 300;
         Time.timeScale = timeScale;
-        timeScaleText.text = $"TimeScale: {timeScale:F2}";
+        timeScaleText.text = $"{timeScale:F2}";
     }
 
     void Update()
@@ -114,12 +114,12 @@ public class LogicScript : MonoBehaviour
     void HandleScore()
     {
         playerScore += Time.timeScale;
-        scoreText.text = $"Score : {playerScore:F2}";
+        scoreText.text = $"{playerScore:F2}";
     }
 
     void UpdateHealthText()
     {
-        healthText.text = $"Health: {health}";
+        healthText.text = $"{health}";
     }
 
     // [ContextMenu("Increase Score")]
