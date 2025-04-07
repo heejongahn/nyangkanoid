@@ -128,6 +128,7 @@ public class BallScript : MonoBehaviour
 
                     Destroy(collision.gameObject);
                     // Check if all blocks are destroyed
+                    GameEventsScript.Instance.OnScore?.Invoke();
 
                     if (GameObject.FindGameObjectsWithTag("Block").Length == 1) // Only the current block is left
                     {
@@ -154,7 +155,6 @@ public class BallScript : MonoBehaviour
 
                     GameEventsScript.Instance.OnHealthDown?.Invoke();
                     SyncPositionWithPlayer();
-                    isGameStarted = false;
                     break;
                 }
             default:

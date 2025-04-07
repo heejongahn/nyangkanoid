@@ -9,16 +9,18 @@ using UnityEngine.Events;
 
 public class LogicScript : MonoBehaviour
 {
-    public int playerScore = 0;
+    public float playerScore = 0;
     public int health = 3;
-    public float pitchModifier = 1;
 
     public AudioSource scoreAudioSource;
     public AudioSource collideAudioSource;
     public AudioSource gameOverAudioSource;
 
-    // public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI scoreText;
     public TextMeshProUGUI healthText;
+    public TextMeshProUGUI timeScaleText;
+
+
     public GameObject gameOverScreen;
     public GameObject pausedScreen;
     public GameObject victoryScreen;
@@ -37,27 +39,36 @@ public class LogicScript : MonoBehaviour
     {
         GameEventsScript.Instance.OnHealthDown.AddListener(OnHealthDown);
         GameEventsScript.Instance.OnWinLevel.AddListener(OnVictory);
+        GameEventsScript.Instance.OnScore.AddListener(HandleScore);
     }
 
     void OnDestroy()
     {
         GameEventsScript.Instance.OnHealthDown.RemoveListener(OnHealthDown);
         GameEventsScript.Instance.OnWinLevel.RemoveListener(OnVictory);
+        GameEventsScript.Instance.OnScore.RemoveListener(HandleScore);
+    }
+
+    void IncreaseTimeScaleIfAvailable()
+    {
+        if (!isGameStarted)
+        {
+            return;
+        }
+
+        if (isPaused)
+        {
+            return;
+        }
+
+        timeScale += Time.deltaTime / 100;
+        Time.timeScale = timeScale;
+        timeScaleText.text = $"TimeScale: {timeScale:F2}";
     }
 
     void Update()
     {
-        if (!isPaused)
-        {
-            timeScale += Time.deltaTime / 50;
-            Time.timeScale = timeScale;
-        }
-
-        // pitchModifier = (1 + (timeScale - 1) / 2) + 0.57F;
-
-        // scoreAudioSource.pitch = pitchModifier;
-        // collideAudioSource.pitch = pitchModifier;
-
+        IncreaseTimeScaleIfAvailable();
 
         var logics = new List<(KeyCode, Action)>{
             (
@@ -100,10 +111,11 @@ public class LogicScript : MonoBehaviour
     }
 
 
-    // void UpdateScoreText()
-    // {
-    //     scoreText.text = $"Score : {playerScore} (Life: {health})";
-    // }
+    void HandleScore()
+    {
+        playerScore += Time.timeScale;
+        scoreText.text = $"Score : {playerScore:F2}";
+    }
 
     void UpdateHealthText()
     {
