@@ -12,6 +12,8 @@ public class LogicScript : MonoBehaviour
     public float playerScore = 0;
     public int health = 3;
 
+    public int remaingingBoost = 3;
+
     public AudioSource scoreAudioSource;
     public AudioSource collideAudioSource;
     public AudioSource gameOverAudioSource;
@@ -29,6 +31,7 @@ public class LogicScript : MonoBehaviour
     private bool isGameOver = false;
     private bool isPaused = false;
     private bool isGameStarted = false;
+    private float boostTimer = 0;
 
     public bool IsGameStarted()
     {
@@ -66,9 +69,31 @@ public class LogicScript : MonoBehaviour
         timeScaleText.text = $"{timeScale:F2}";
     }
 
+    void RestoreBoost()
+    {
+        if (!isGameStarted)
+        {
+            return;
+        }
+
+        if (isPaused)
+        {
+            return;
+        }
+
+        boostTimer += Time.deltaTime;
+        if (boostTimer > 5)
+        {
+            remaingingBoost = Math.Min(remaingingBoost + 1, 3);
+            boostTimer = 0;
+            return;
+        }
+    }
+
     void Update()
     {
         IncreaseTimeScaleIfAvailable();
+        RestoreBoost();
 
         var logics = new List<(KeyCode, Action)>{
             (
@@ -97,7 +122,19 @@ public class LogicScript : MonoBehaviour
 
                     ToggleIsGameStarted();
                 }
-            )
+            ),
+            (
+                KeyCode.Z,
+                () => {
+                    BoostPlayer("left");
+                }
+            ),
+            (
+                KeyCode.C,
+                () => {
+                    BoostPlayer("right");
+                }
+            ),
         };
 
         foreach (var logic in logics)
@@ -120,6 +157,17 @@ public class LogicScript : MonoBehaviour
     void UpdateHealthText()
     {
         healthText.text = $"{health}";
+    }
+
+    void BoostPlayer(string direction)
+    {
+        if (remaingingBoost == 0)
+        {
+            return;
+        }
+
+        remaingingBoost -= 1;
+        GameEventsScript.Instance.OnBoostPlayer?.Invoke(direction);
     }
 
     // [ContextMenu("Increase Score")]

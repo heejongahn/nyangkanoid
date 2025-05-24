@@ -27,7 +27,7 @@ public class BlockScript : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("BlockScript: OnCollisionEnter2D with " + collision.gameObject.tag);
+        // Debug.Log("BlockScript: OnCollisionEnter2D with " + collision.gameObject.tag);
 
         switch (collision.gameObject.tag)
         {
@@ -44,7 +44,7 @@ public class BlockScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("BlockScript: OnTriggerEnter2D with " + collision.gameObject.tag);
+        // Debug.Log("BlockScript: OnTriggerEnter2D with " + collision.gameObject.tag);
 
         switch (collision.gameObject.tag)
         {

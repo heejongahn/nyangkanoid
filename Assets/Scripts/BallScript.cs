@@ -77,7 +77,7 @@ public class BallScript : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("BallScript: OnCollisionEnter2D with " + collision.gameObject.tag);
+        // Debug.Log("BallScript: OnCollisionEnter2D with " + collision.gameObject.tag);
 
         switch (collision.gameObject.tag)
         {
@@ -146,7 +146,7 @@ public class BallScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("BallScript: OnTriggerEnter2D with " + collision.gameObject.tag);
+        // Debug.Log("BallScript: OnTriggerEnter2D with " + collision.gameObject.tag);
 
         switch (collision.gameObject.tag)
         {

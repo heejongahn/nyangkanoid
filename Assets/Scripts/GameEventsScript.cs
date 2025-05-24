@@ -11,15 +11,18 @@ public class GameEventsScript : MonoBehaviour
     public UnityEvent OnGameOver;
     public UnityEvent OnWinLevel;
 
+    public UnityEvent<string> OnBoostPlayer;
+
+
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if (Instance != null)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 }
